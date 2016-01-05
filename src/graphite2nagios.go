@@ -24,13 +24,14 @@ func converTime2GraphiteFormat(time2convert string) string {
 	return strings.Replace(timeRange.Format("15:04 20060102")," ","_", -1) //10:0020150923
 }
 
+
 func main() {
 	var authToken, metric, range1From, range1Until, range2From, range2Until string
 	var thresholdWarning, thresholdCritical int
 	var debug bool
 	username := "oleg.obleukhov"
 	flag.StringVar(&authToken, "a", "", "AuthToken to access the graphite-API. For example 'qqq'")
-	flag.StringVar(&metric, "metric", "nagios.wallOfShame.oleg_obleukhov.currentProblems", "Name of metric or metric filter e.g. Character.*")
+	flag.StringVar(&metric, "metric", "qqqq.test.leoleovich.currentProblems", "Name of metric or metric filter e.g. Character.*")
 	flag.StringVar(&range1From, "range1From", time.Unix((time.Now().Unix() - 90000), 0).Format("2006-01-02 15:04"), "e.g. 2014-09-01 10:00")
 	flag.StringVar(&range1Until, "range1Until", time.Unix((time.Now().Unix() - 86400), 0).Format("2006-01-02 15:04"), "e.g. 2014-09-01 11:00")
 	flag.StringVar(&range2From, "range2From", time.Unix((time.Now().Unix() - 3600), 0).Format("2006-01-02 15:04"), "e.g. 2014-09-01 10:00")
