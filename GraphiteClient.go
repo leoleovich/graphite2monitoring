@@ -28,10 +28,11 @@ func getUrlAuthTokenParam(c GraphiteClient) string {
 	return fmt.Sprint("__auth_token=", c.authToken)
 }
 
-func download(url string) []byte {
-	fmt.Print(url+"\n")
+func download(url string, debug bool) []byte {
+	if debug {
+		fmt.Println("URL: " + url)
+	}
 	res, err  := http.Get(url)
-	//fmt.Print(res, err)
 	if err != nil {
 		panic(err)
 	}
@@ -54,21 +55,28 @@ func json2float (content []byte) float64 {
 		Datapoints [][]float64 `json:"datapoints"`
 	}
 	var r []Result
-	//s := `[{"target": "summarize(nagios.wallOfShame.oleg_obleukhov.currentProblems, \"99year\", \"avg\")", "datapoints": [[0.5317615073466304, 0]]}]`
+	//s := `[{"target": "summarize(qqqq.test.leoleovich.currentProblems, \"99year\", \"avg\")", "datapoints": [[0.5317615073466304, 0]]}]`
 	json.Unmarshal(content, &r)
 	//fmt.Println(r[0].Datapoints[0][0])
 	if len(r) == 0 {
 		fmt.Println("Invalid data got from Graphite - Check, that your metric exist")
 		os.Exit(2)
-	} else if len(r[0].Datapoints) == 0 {
-		fmt.Println("Invalid data got from Graphite - Empty Datapoint set")
-		os.Exit(2)
 	}
-	return r[0].Datapoints[0][0]
+
+	var sum float64
+	for _, value := range r {
+		if len(r[0].Datapoints) == 0 {
+			fmt.Println("Invalid data got from Graphite - Empty Datapoint set")
+			os.Exit(2)
+		}
+		sum += value.Datapoints[0][0]
+	}
+	return sum/float64(len(r))
 }
-func (c GraphiteClient)getValueOfMetric(metricName string, from string, until string) float64 {
-	intervalString := "99year"; //Big value, so that we get the avg over all data. Then we are sure that we get only one result.
+func (c GraphiteClient)getValueOfMetric(metricName string, from string, until string, debug bool) float64 {
+	//Big value, so that we get the avg over all data. Then we are sure that we get only one result.
+	intervalString := "99year"
 	url := fmt.Sprint(c.getRenderBaseUrl(), "target=summarize(", metricName,  ",\"",  intervalString,  "\",\"avg\")&from=", from, "&until=", until, "&format=json")
 
-	return json2float(download(url))
+	return json2float(download(url, debug))
 }

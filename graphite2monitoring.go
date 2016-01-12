@@ -27,22 +27,25 @@ func converTime2GraphiteFormat(time2convert string) string {
 
 func main() {
 	var username, authToken, metric, range1From, range1Until, range2From, range2Until string
-	var thresholdWarning, thresholdCritical int
+	var thresholdWarningI, thresholdCriticalI, thresholdWarningD, thresholdCriticalD int
 	var debug bool
-        flag.StringVar(&username, "u", "graphite", "User, which has rights to access Graphite")
+	flag.StringVar(&username, "u", "graphite", "User, which has rights to access Graphite")
 	flag.StringVar(&authToken, "a", "", "AuthToken to access the graphite-API. For example 'qqq'")
-	flag.StringVar(&metric, "metric", "qqqq.test.leoleovich.currentProblems", "Name of metric or metric filter e.g. Character.*")
+	flag.StringVar(&metric, "m", "qqqq.test.leoleovich.currentProblems", "Name of metric or metric filter e.g. Character.*")
 	flag.StringVar(&range1From, "range1From", time.Unix((time.Now().Unix() - 90000), 0).Format("2006-01-02 15:04"), "e.g. 2014-09-01 10:00")
 	flag.StringVar(&range1Until, "range1Until", time.Unix((time.Now().Unix() - 86400), 0).Format("2006-01-02 15:04"), "e.g. 2014-09-01 11:00")
 	flag.StringVar(&range2From, "range2From", time.Unix((time.Now().Unix() - 3600), 0).Format("2006-01-02 15:04"), "e.g. 2014-09-01 10:00")
 	flag.StringVar(&range2Until, "range2Until", time.Now().Format("2006-01-02 15:04"), "e.g. 2014-09-01 11:00")
-	flag.IntVar(&thresholdWarning, "w", 20, "Metrics above the threshold will be marked as warning")
-	flag.IntVar(&thresholdCritical, "c", 40, "Metrics above the threshold will be marked as critical")
+	flag.IntVar(&thresholdWarningI, "wi", 20, "Metrics above this threshold will be marked as warning")
+	flag.IntVar(&thresholdCriticalI, "ci", 40, "Metrics above this threshold will be marked as critical")
+	flag.IntVar(&thresholdWarningD, "wd", 20, "Metrics below this threshold will be marked as warning")
+	flag.IntVar(&thresholdCriticalD, "cd", 40, "Metrics below this threshold will be marked as critical")
+
 	flag.BoolVar(&debug, "d", false, "Debug mode will print a lot of additinal info")
 	flag.Parse()
 
 	if authToken == "" {
-		println("authToken (-a) attribute is required")
+		fmt.Println("authToken (-a) attribute is required")
 		os.Exit(2)
 	}
 	range1From = converTime2GraphiteFormat(range1From)
@@ -51,11 +54,10 @@ func main() {
 	range2Until = converTime2GraphiteFormat(range2Until)
 
 	if debug {
-		fmt.Println(authToken)
-		fmt.Println(range1From+" - "+range1Until+"\n")
-		fmt.Println(range2From+" - "+range2Until+"\n")
+		fmt.Println("Token: " + authToken)
+		fmt.Println("Range1: " + range1From + " - " + range1Until)
+		fmt.Println("Range2: " + range2From + " - " + range2Until)
 	}
-
 
 	cm := CompareMetrics{
 		GraphiteClient{new_token(username, int(time.Now().Unix()), authToken)},
@@ -64,10 +66,15 @@ func main() {
 		range1Until,
 		range2From,
 		range2Until,
-		thresholdWarning,
-		thresholdCritical}
+		thresholdWarningI,
+		thresholdCriticalI,
+		thresholdWarningD,
+		thresholdCriticalD}
 
-	result, returnCode := cm.analysisOfMetrics()
-	println(result)
+	// Compare metrics and return result
+	result, returnCode := cm.analysisOfMetrics(debug)
+
+	// Print and exit
+	fmt.Println(result)
 	os.Exit(returnCode)
 }
