@@ -65,10 +65,11 @@ func json2float (content []byte) float64 {
 
 	var sum float64
 	for _, value := range r {
-		if len(r[0].Datapoints) == 0 {
+		if len(value.Datapoints) == 0 {
 			fmt.Println("Invalid data got from Graphite - Empty Datapoint set")
 			os.Exit(2)
 		}
+		// Graphite may return null as a value (no data in fact, but you will have 0 in structure)
 		sum += value.Datapoints[0][0]
 	}
 	return sum/float64(len(r))

@@ -17,12 +17,5 @@ Usage:
 - -wd int
         Metrics below this threshold will be marked as warning (default 20)
 - -m string  
-        Name of metric or metric filter e.g. Character.* (default "qqqq.test.leoleovich.currentProblems")  
-- -range1From string  
-        e.g. 2015-10-23 10:00 (default "2016-01-04 13:28")  
-- -range1Until string  
-        e.g. 2015-10-23 11:00 (default "2016-01-04 14:28")  
-- -range2From string  
-        e.g. 2015-10-23 10:00 (default "2016-01-05 13:28")  
-- -range2Until string  
-        e.g. 2015-10-23 11:00 (default "2016-01-05 14:28")  
+        Name of metric or metric filter e.g. qqqq.test.leoleovich.currentProblems
+

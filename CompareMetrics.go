@@ -47,18 +47,18 @@ func (cm CompareMetrics) analysisOfMetrics(debug bool) (string, int)  {
 		// Growing of metric
 		difference = percentage - 100
 		message = "Increasing of metric is: " + strconv.FormatFloat(difference,'f', 1, 64) + "%"
-		if difference > float64(cm.thresholdCriticalI) {
+		if difference > float64(cm.thresholdCriticalI) && cm.thresholdCriticalI != 0 {
 			return message, EXIT_CODE_CRITICAL
-		} else if difference > float64(cm.thresholdWarningI) {
+		} else if difference > float64(cm.thresholdWarningI) && cm.thresholdWarningI != 0 {
 			return message, EXIT_CODE_WARNING
 		}
 	} else if percentage < 100 {
 		// Decreasing of metric
 		difference = 100 - percentage
 		message = "Decreasing of metric is: " + strconv.FormatFloat(difference,'f', 1, 64) + "%"
-		if difference > float64(cm.thresholdCriticalD) {
+		if difference > float64(cm.thresholdCriticalD) && cm.thresholdCriticalD != 0 {
 			return message, EXIT_CODE_CRITICAL
-		} else if difference > float64(cm.thresholdWarningD) {
+		} else if difference > float64(cm.thresholdWarningD) && cm.thresholdWarningD != 0 {
 			return message, EXIT_CODE_WARNING
 		}
 	} else {
