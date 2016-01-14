@@ -19,13 +19,13 @@ Usage:
 - -m string  
         Name of metric or metric filter e.g. qqqq.test.leoleovich.currentProblems
 - -range1From int
-    	Amount of seconds ago for the 1st range (from) (default 90000)
+    	Amount of seconds ago for the 1st range (from) (default 90000) = 1 day and 1 hour
 - -range1Until int
-    	Amount of seconds ago for the 1st range (until) (default 86400)
+    	Amount of seconds ago for the 1st range (until) (default 86400) = 1 day
 - -range2From int
-    	Amount of seconds ago for the 2st range (from) (default 3600)
+    	Amount of seconds ago for the 2st range (from) (default 3600) = 1 hour
 - -range2Until int
-    	Amount of seconds ago for the 2st range (until)
+    	Amount of seconds ago for the 2st range (until) (default 0) = current time
 - -u string
     	User, which has rights to access Graphite (default "graphite")
 - -d	Debug mode will print a lot of additinal info
