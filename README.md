@@ -4,8 +4,8 @@ This service is taking metric **-m** from graphite server **-U**, authenticated 
 If there is increasing more, than **-wi** it will exit with code 1 and if more, than **-ci** - with exit code 2.
 Same for decreasing with arguments **-wd** and **-cd**
 Also exit message will be percentage of the difference between timeranges.
+
 # Usage
-Usage:
 - -U string  
         Base address of your graphite server e.g. https://graphite.protury.info/
 - -a string  
@@ -31,3 +31,17 @@ Usage:
 - -u string
     	User, which has rights to access Graphite (default "graphite")
 - -d	Debug mode will print a lot of additinal info
+
+# Examples
+- graphite2monitoring -U 'https://graphite.protury.info/' -a 'verySecretKey' -m 'all.about.money' -wd '0' -cd '0' -wi '5' -ci '10' -range1From '3600' -range1Until '3000' -range2From '600' -range2Until 0  
+Decreasing of metric is: 78.7%  
+echo $?  
+0
+- graphite2monitoring -U 'https://graphite.protury.info/' -a 'verySecretKey' -m 'all.about.money' -wd '70' -cd '80' -wi '5' -ci '10' -range1From '3600' -range1Until '3000' -range2From '600' -range2Until 0  
+Decreasing of metric is: 78.7%  
+echo $?  
+1
+- graphite2monitoring -U 'https://graphite.protury.info/' -a 'verySecretKey' -m 'all.about.money' -wd '5' -cd '10'
+Increasing of metric is: 78.9%  
+echo $?  
+2
