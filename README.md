@@ -1,6 +1,6 @@
 # Description
 
-This service is taking metric **m** from graphite server **-U**, authenticated by **-u** with tocken **-a** with timerange from **range1From** untill **range1Until** and compare it with timerange between **range2From** and **range2Until**
+This service is taking metric **-m** from graphite server **-U**, authenticated by **-u** with tocken **-a** with timerange from **-range1From** untill **-range1Until** and compare it with timerange between **-range2From** and **-range2Until**
 If there is increasing more, than **-wi** it will exit with code 1 and if more, than **-ci** - with exit code 2.
 Same for decreasing with arguments **-wd** and **-cd**
 Also exit message will be percentage of the difference between timeranges.
