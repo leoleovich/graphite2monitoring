@@ -11,17 +11,16 @@ import (
 
 type GraphiteClient struct {
 	authToken string
+	graphiteBaseURL string
 }
-
-const GRAPHITE_BASE_URL = "https://graphite.innogames.de/"
 
 
 func (c GraphiteClient)getFindMetricBaseUrl() string {
-	return fmt.Sprint(GRAPHITE_BASE_URL, "metrics/find?", getUrlAuthTokenParam(c), "&")
+	return fmt.Sprint(c.graphiteBaseURL, "metrics/find?", getUrlAuthTokenParam(c), "&")
 }
 
 func (c GraphiteClient)getRenderBaseUrl() string {
-	return fmt.Sprint(GRAPHITE_BASE_URL, "render?", getUrlAuthTokenParam(c), "&")
+	return fmt.Sprint(c.graphiteBaseURL, "render?", getUrlAuthTokenParam(c), "&")
 }
 
 func getUrlAuthTokenParam(c GraphiteClient) string {

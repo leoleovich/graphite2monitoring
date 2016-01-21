@@ -25,13 +25,14 @@ func converTime2GraphiteFormat(time2convert int64) string {
 }
 
 func main() {
-	var username, authToken, metric string
+	var username, authToken, metric, url string
 	var thresholdWarningI, thresholdCriticalI, thresholdWarningD, thresholdCriticalD int
 	var range1FromAgo, range1UntilAgo, range2FromAgo, range2UntilAgo int64
 	var debug bool
 	flag.StringVar(&username, "u", "graphite", "User, which has rights to access Graphite")
 	flag.StringVar(&authToken, "a", "", "AuthToken to access the graphite-API. For example 'qqq'")
 	flag.StringVar(&metric, "m", "", "Name of metric or metric filter e.g. qqqq.test.leoleovich.currentProblems")
+	flag.StringVar(&url, "U", "", "Base address of your graphite server e.g. https://graphite.protury.info/")
 
 	flag.Int64Var(&range1FromAgo, "range1From", 90000, "Amount of seconds ago for the 1st range (from)")
 	flag.Int64Var(&range1UntilAgo, "range1Until", 86400, "Amount of seconds ago for the 1st range (until)")
@@ -46,8 +47,8 @@ func main() {
 	flag.BoolVar(&debug, "d", false, "Debug mode will print a lot of additinal info")
 	flag.Parse()
 
-	if authToken == "" ||  metric == "" {
-		fmt.Println("authToken (-a) and metric (-m) attributes are required")
+	if authToken == "" ||  metric == "" || url == "" {
+		fmt.Println("URL (-U), authToken (-a) and metric (-m) attributes are required")
 		os.Exit(5)
 	}
 	if thresholdCriticalD < thresholdWarningD || thresholdCriticalI < thresholdWarningI {
@@ -66,7 +67,7 @@ func main() {
 	}
 
 	cm := CompareMetrics{
-		GraphiteClient{new_token(username, int(time.Now().Unix()), authToken)},
+		GraphiteClient{new_token(username, int(time.Now().Unix()), authToken), url},
 		metric,
 		range1FromS,
 		range1UntilS,
