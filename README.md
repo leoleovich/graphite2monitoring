@@ -10,7 +10,7 @@ Also exit message will be percentage of the difference between timeranges.
         Base address of your graphite server e.g. https://graphite.protury.info/
 - -a string  
         AuthToken to access the graphite-API. For example 'qqq'  
-- -ci int  
+- -ci int
         Metrics above this threshold will be marked as critical (default 40)
 - -wi int
         Metrics above this threshold will be marked as warning (default 20)

@@ -11,8 +11,6 @@ import (
 	"strings"
 )
 
-
-
 func new_token(username string, timestamp int, secret string) string {
 	h := hmac.New(sha256.New, []byte(secret))
 	unauthed_token := fmt.Sprint(timestamp,":",username)
