@@ -6,9 +6,9 @@ Same for decreasing with arguments **-wd** and **-cd**
 Also exit message will be percentage of the difference between timeranges.
 
 # Usage
-- -U string  
+- -U string
         Base address of your graphite server e.g. https://graphite.protury.info/
-- -a string  
+- -a string
         AuthToken to access the graphite-API. For example 'qqq'  
 - -ci int
         Metrics above this threshold will be marked as critical (default 40)
