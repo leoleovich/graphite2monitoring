@@ -18,7 +18,7 @@ Also exit message will be percentage of the difference between timeranges.
         Metrics below this threshold will be marked as critical (default 40)
 - -wd int
         Metrics below this threshold will be marked as warning (default 20)
-- -m string  
+- -m string
         Name of metric or metric filter e.g. qqqq.test.leoleovich.currentProblems
 - -range1From int
     	Amount of seconds ago for the 1st range (from) (default 90000) = 1 day and 1 hour
