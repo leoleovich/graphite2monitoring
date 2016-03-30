@@ -18,8 +18,8 @@ func new_token(username string, timestamp int, secret string) string {
 	return fmt.Sprint(hex.EncodeToString(h.Sum(nil)), ":", timestamp, ":", username)
 }
 func converTime2GraphiteFormat(time2convert int64) string {
-	timeRange := time.Unix(time.Now().UTC().Unix() - time2convert, 0)
-	return strings.Replace(timeRange.Format("15:04 20060102")," ","_", -1) //10:0020150923
+	timeRange := time.Unix(time.Now().Unix() - time2convert, 0)
+	return strings.Replace(timeRange.UTC().Format("15:04 20060102")," ","_", -1) //10:0020150923
 }
 
 func main() {
