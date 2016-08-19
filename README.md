@@ -7,13 +7,13 @@ Also exit message will be percentage of the difference between time ranges.
 
 ## Functions
 This service will analyze metrics from graphite in one of next modes:
-	 - percent (default):
-		 takes mertic within range1 (from-until) and range2 (from-until)
-		 and count as percent 2 metric from the 1st one (2nd*100/1st)
-	 - absolute:
-		 simular to percent, but with absolute values (2nd-1st)
-	 - absoluteSingle:
-		 tales metric only within range1 (from-until)
+- percent (default):  
+	takes mertic within range1 (from-until) and range2 (from-until)  
+	and count as percent 2 metric from the 1st one (2nd*100/1st)
+- absolute:  
+	simular to percent, but with absolute values (2nd-1st)
+- absoluteSingle:  
+	tales metric only within range1 (from-until)
 All of these methods print the result and give you exit code according nagios standards
 
 
