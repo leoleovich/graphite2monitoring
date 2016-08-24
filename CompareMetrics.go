@@ -99,7 +99,7 @@ func (cm *CompareMetrics) absoluteSingle(debug bool) (string, int) {
 		return fmt.Sprintf("Metric is above warning threshold (%f > %f)", value, cm.thresholdWarningI), EXIT_CODE_WARNING
 	} else if value < cm.thresholdCriticalD && cm.thresholdCriticalD != 0 {
 		return fmt.Sprintf("Metric is below critical threshold (%f < %f)", value, cm.thresholdCriticalD), EXIT_CODE_CRITICAL
-	} else if value > cm.thresholdWarningD && cm.thresholdWarningD != 0 {
+	} else if value < cm.thresholdWarningD && cm.thresholdWarningD != 0 {
 		return fmt.Sprintf("Metric is below warning threshold (%f < %f)", value, cm.thresholdWarningD), EXIT_CODE_WARNING
 	} else {
 		return fmt.Sprintf("Metric is ok (low limits (%f %f) < %f < high limits (%f %f))",
