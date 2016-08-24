@@ -38,18 +38,18 @@ func (cm *CompareMetrics) percentage(debug bool) (string, int) {
 		// Growing of metric
 		difference = percentage - 100
 		message = fmt.Sprintf("Increasing of metric is: %f%", difference)
-		if difference > float64(cm.thresholdCriticalI) && cm.thresholdCriticalI != 0 {
+		if difference > cm.thresholdCriticalI && cm.thresholdCriticalI != 0 {
 			return message, EXIT_CODE_CRITICAL
-		} else if difference > float64(cm.thresholdWarningI) && cm.thresholdWarningI != 0 {
+		} else if difference > cm.thresholdWarningI && cm.thresholdWarningI != 0 {
 			return message, EXIT_CODE_WARNING
 		}
 	} else if percentage < 100 {
 		// Decreasing of metric
 		difference = 100 - percentage
 		message = fmt.Sprintf("Decreasing of metric is: %f%", difference)
-		if difference > float64(cm.thresholdCriticalD) && cm.thresholdCriticalD != 0 {
+		if difference > cm.thresholdCriticalD && cm.thresholdCriticalD != 0 {
 			return message, EXIT_CODE_CRITICAL
-		} else if difference > float64(cm.thresholdWarningD) && cm.thresholdWarningD != 0 {
+		} else if difference > cm.thresholdWarningD && cm.thresholdWarningD != 0 {
 			return message, EXIT_CODE_WARNING
 		}
 	} else {
@@ -72,16 +72,16 @@ func (cm *CompareMetrics) absolute(debug bool) (string, int) {
 
 	if difference > 0 {
 		message = fmt.Sprintf("Increasing of metric is: %f", difference)
-		if difference > float64(cm.thresholdCriticalI) && cm.thresholdCriticalI != 0 {
+		if difference > cm.thresholdCriticalI && cm.thresholdCriticalI != 0 {
 			return message, EXIT_CODE_CRITICAL
-		} else if difference > float64(cm.thresholdWarningI) && cm.thresholdWarningI != 0 {
+		} else if difference > cm.thresholdWarningI && cm.thresholdWarningI != 0 {
 			return message, EXIT_CODE_WARNING
 		}
 	} else if difference < 0 {
 		message = fmt.Sprintf("Decreasing of metric is: %f", difference)
-		if difference > float64(cm.thresholdCriticalD) && cm.thresholdCriticalD != 0 {
+		if difference > cm.thresholdCriticalD && cm.thresholdCriticalD != 0 {
 			return message, EXIT_CODE_CRITICAL
-		} else if difference > float64(cm.thresholdWarningD) && cm.thresholdWarningD != 0 {
+		} else if difference > cm.thresholdWarningD && cm.thresholdWarningD != 0 {
 			return message, EXIT_CODE_WARNING
 		}
 	} else {
