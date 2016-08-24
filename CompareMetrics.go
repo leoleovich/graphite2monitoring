@@ -74,14 +74,14 @@ func (cm *CompareMetrics) absolute(debug bool) (string, int) {
 		message = fmt.Sprintf("Increasing of metric is: %f", difference)
 		if difference > cm.thresholdCriticalI && cm.thresholdCriticalI != 0 {
 			return message, EXIT_CODE_CRITICAL
-		} else if difference > cm.thresholdWarningI && cm.thresholdWarningI != 0 {
+		} else if difference >= cm.thresholdWarningI && cm.thresholdWarningI != 0 {
 			return message, EXIT_CODE_WARNING
 		}
 	} else if difference < 0 {
 		message = fmt.Sprintf("Decreasing of metric is: %f", difference)
 		if difference > cm.thresholdCriticalD && cm.thresholdCriticalD != 0 {
 			return message, EXIT_CODE_CRITICAL
-		} else if difference > cm.thresholdWarningD && cm.thresholdWarningD != 0 {
+		} else if difference >= cm.thresholdWarningD && cm.thresholdWarningD != 0 {
 			return message, EXIT_CODE_WARNING
 		}
 	} else {
@@ -95,12 +95,12 @@ func (cm *CompareMetrics) absoluteSingle(debug bool) (string, int) {
 
 	if value > cm.thresholdCriticalI && cm.thresholdCriticalI != 0 {
 		return fmt.Sprintf("Metric is above critical threshold (%f > %f)", value, cm.thresholdCriticalI), EXIT_CODE_CRITICAL
-	} else if value > cm.thresholdWarningI && cm.thresholdWarningI != 0 {
-		return fmt.Sprintf("Metric is above warning threshold (%f > %f)", value, cm.thresholdWarningI), EXIT_CODE_WARNING
+	} else if value >= cm.thresholdWarningI && cm.thresholdWarningI != 0 {
+		return fmt.Sprintf("Metric is above warning threshold (%f => %f)", value, cm.thresholdWarningI), EXIT_CODE_WARNING
 	} else if value < cm.thresholdCriticalD && cm.thresholdCriticalD != 0 {
 		return fmt.Sprintf("Metric is below critical threshold (%f < %f)", value, cm.thresholdCriticalD), EXIT_CODE_CRITICAL
-	} else if value < cm.thresholdWarningD && cm.thresholdWarningD != 0 {
-		return fmt.Sprintf("Metric is below warning threshold (%f < %f)", value, cm.thresholdWarningD), EXIT_CODE_WARNING
+	} else if value <= cm.thresholdWarningD && cm.thresholdWarningD != 0 {
+		return fmt.Sprintf("Metric is below warning threshold (%f <= %f)", value, cm.thresholdWarningD), EXIT_CODE_WARNING
 	} else {
 		return fmt.Sprintf("Metric is ok (low limits (%f %f) < %f < high limits (%f %f))",
 			cm.thresholdCriticalD, cm.thresholdWarningD, value, cm.thresholdWarningI, cm.thresholdCriticalI ), EXIT_CODE_OK
