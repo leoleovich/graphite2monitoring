@@ -15,6 +15,7 @@ const EXIT_CODE_OK = 0;
 const EXIT_CODE_WARNING = 1;
 const EXIT_CODE_CRITICAL = 2;
 const EXIT_CODE_UNKNOWN = 3;
+const MAGIC_DO_NOT_CARE_VALUE = -0.10101;
 
 func new_token(username string, timestamp int, secret string) string {
 	h := hmac.New(sha256.New, []byte(secret))
@@ -56,10 +57,10 @@ func main() {
 	flag.IntVar(&range2FromAgo, "range2From", 3600, "Amount of seconds ago for the 2st range (from)")
 	flag.IntVar(&range2UntilAgo, "range2Until", 0, "Amount of seconds ago for the 2st range (until)")
 
-	flag.Float64Var(&thresholdWarningI, "wi", 20, "Increasing. Metrics above this threshold will be marked as warning")
-	flag.Float64Var(&thresholdCriticalI, "ci", 40, "Increasing. Metrics above this threshold will be marked as critical")
-	flag.Float64Var(&thresholdWarningD, "wd", 20, "Decreasing. Metrics below this threshold will be marked as warning")
-	flag.Float64Var(&thresholdCriticalD, "cd", 40, "Decreasing. Metrics below this threshold will be marked as critical")
+	flag.Float64Var(&thresholdWarningI, "wi", MAGIC_DO_NOT_CARE_VALUE, "Increasing. Metrics above this threshold will be marked as warning")
+	flag.Float64Var(&thresholdCriticalI, "ci", MAGIC_DO_NOT_CARE_VALUE, "Increasing. Metrics above this threshold will be marked as critical")
+	flag.Float64Var(&thresholdWarningD, "wd", MAGIC_DO_NOT_CARE_VALUE, "Decreasing. Metrics below this threshold will be marked as warning")
+	flag.Float64Var(&thresholdCriticalD, "cd", MAGIC_DO_NOT_CARE_VALUE, "Decreasing. Metrics below this threshold will be marked as critical")
 
 
 

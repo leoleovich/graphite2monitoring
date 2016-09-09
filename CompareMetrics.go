@@ -38,18 +38,18 @@ func (cm *CompareMetrics) percentage(debug bool) (string, int) {
 		// Growing of metric
 		difference = percentage - 100
 		message = fmt.Sprintf("Increasing of metric is: %f%", difference)
-		if difference > cm.thresholdCriticalI && cm.thresholdCriticalI != 0 {
+		if difference > cm.thresholdCriticalI && cm.thresholdCriticalI != MAGIC_DO_NOT_CARE_VALUE {
 			return message, EXIT_CODE_CRITICAL
-		} else if difference > cm.thresholdWarningI && cm.thresholdWarningI != 0 {
+		} else if difference > cm.thresholdWarningI && cm.thresholdWarningI != MAGIC_DO_NOT_CARE_VALUE {
 			return message, EXIT_CODE_WARNING
 		}
 	} else if percentage < 100 {
 		// Decreasing of metric
 		difference = 100 - percentage
 		message = fmt.Sprintf("Decreasing of metric is: %f%", difference)
-		if difference > cm.thresholdCriticalD && cm.thresholdCriticalD != 0 {
+		if difference > cm.thresholdCriticalD && cm.thresholdCriticalD != MAGIC_DO_NOT_CARE_VALUE {
 			return message, EXIT_CODE_CRITICAL
-		} else if difference > cm.thresholdWarningD && cm.thresholdWarningD != 0 {
+		} else if difference > cm.thresholdWarningD && cm.thresholdWarningD != MAGIC_DO_NOT_CARE_VALUE {
 			return message, EXIT_CODE_WARNING
 		}
 	} else {
@@ -72,16 +72,16 @@ func (cm *CompareMetrics) absolute(debug bool) (string, int) {
 
 	if difference > 0 {
 		message = fmt.Sprintf("Increasing of metric is: %f", difference)
-		if difference > cm.thresholdCriticalI && cm.thresholdCriticalI != 0 {
+		if difference > cm.thresholdCriticalI && cm.thresholdCriticalI != MAGIC_DO_NOT_CARE_VALUE {
 			return message, EXIT_CODE_CRITICAL
-		} else if difference >= cm.thresholdWarningI && cm.thresholdWarningI != 0 {
+		} else if difference >= cm.thresholdWarningI && cm.thresholdWarningI != MAGIC_DO_NOT_CARE_VALUE {
 			return message, EXIT_CODE_WARNING
 		}
 	} else if difference < 0 {
 		message = fmt.Sprintf("Decreasing of metric is: %f", difference)
-		if difference > cm.thresholdCriticalD && cm.thresholdCriticalD != 0 {
+		if difference > cm.thresholdCriticalD && cm.thresholdCriticalD != MAGIC_DO_NOT_CARE_VALUE {
 			return message, EXIT_CODE_CRITICAL
-		} else if difference >= cm.thresholdWarningD && cm.thresholdWarningD != 0 {
+		} else if difference >= cm.thresholdWarningD && cm.thresholdWarningD != MAGIC_DO_NOT_CARE_VALUE {
 			return message, EXIT_CODE_WARNING
 		}
 	} else {
@@ -93,13 +93,13 @@ func (cm *CompareMetrics) absolute(debug bool) (string, int) {
 func (cm *CompareMetrics) absoluteSingle(debug bool) (string, int) {
 	value := cm.graphiteClient.getValueOfMetric(cm.metric, cm.range1From, cm.range1Until, debug)
 
-	if value > cm.thresholdCriticalI && cm.thresholdCriticalI != 0 {
+	if value > cm.thresholdCriticalI && cm.thresholdCriticalI != MAGIC_DO_NOT_CARE_VALUE {
 		return fmt.Sprintf("Metric is above critical threshold (%f > %f)", value, cm.thresholdCriticalI), EXIT_CODE_CRITICAL
-	} else if value >= cm.thresholdWarningI && cm.thresholdWarningI != 0 {
+	} else if value >= cm.thresholdWarningI && cm.thresholdWarningI != MAGIC_DO_NOT_CARE_VALUE {
 		return fmt.Sprintf("Metric is above warning threshold (%f => %f)", value, cm.thresholdWarningI), EXIT_CODE_WARNING
-	} else if value < cm.thresholdCriticalD && cm.thresholdCriticalD != 0 {
+	} else if value < cm.thresholdCriticalD && cm.thresholdCriticalD != MAGIC_DO_NOT_CARE_VALUE {
 		return fmt.Sprintf("Metric is below critical threshold (%f < %f)", value, cm.thresholdCriticalD), EXIT_CODE_CRITICAL
-	} else if value <= cm.thresholdWarningD && cm.thresholdWarningD != 0 {
+	} else if value <= cm.thresholdWarningD && cm.thresholdWarningD != MAGIC_DO_NOT_CARE_VALUE {
 		return fmt.Sprintf("Metric is below warning threshold (%f <= %f)", value, cm.thresholdWarningD), EXIT_CODE_WARNING
 	} else {
 		return fmt.Sprintf("Metric is ok (low limits (%f %f) < %f < high limits (%f %f))",
