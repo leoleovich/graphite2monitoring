@@ -35,13 +35,13 @@ func main() {
 
 
 	message := "This service will analyze metrics from graphite in one of next modes:\n" +
-	"\t - percent (default):\n" +
+	"\t - percentageDiff (default):\n" +
 	"\t\t takes mertic within range1 (from-until) and range2 (from-until)\n" +
 	"\t\t and count as percent 2 metric from the 1st one (2nd*100/1st)\n" +
-	"\t - absolute:\n" +
+	"\t - absoluteDiff:\n" +
 	"\t\t simular to percent, but with absolute values (2nd-1st)\n" +
-	"\t - absoluteSingle:\n" +
-	"\t\t tales metric only within range1 (from-until)\n" +
+	"\t - absoluteCmp:\n" +
+	"\t\t tales metric only within range1 (from-until) and compares with absolute numbers (not diff)\n" +
 	"All of these methods print the result and give you exit code according nagios standards"
 
 
@@ -50,7 +50,7 @@ func main() {
 	flag.StringVar(&metric, "m", "", "Name of metric or metric filter e.g. qqqq.test.leoleovich.currentProblems")
 	flag.StringVar(&url, "U", "", "Base address of your graphite server e.g. https://graphite.protury.info/")
 
-	flag.StringVar(&mode, "mode", "percent", "Mode of analysis of metrics. E.G. percent, absolute, singleAbsolute")
+	flag.StringVar(&mode, "mode", "percentageDiff", "Mode of analysis of metrics. E.G. percentageDiff, absoluteDiff, absoluteCmp")
 
 	flag.IntVar(&range1FromAgo, "range1From", 90000, "Amount of seconds ago for the 1st range (from)")
 	flag.IntVar(&range1UntilAgo, "range1Until", 86400, "Amount of seconds ago for the 1st range (until)")
@@ -74,9 +74,7 @@ func main() {
 	}
 
 	switch mode {
-	case "percent":
-	case "absolute":
-	case "singleAbsolute":
+	case "percentageDiff", "absoluteDiff", "absoluteCmp":
 	default:
 		fmt.Println("Unsupported mode " + mode)
 		flag.Usage = func() {

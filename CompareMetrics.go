@@ -18,7 +18,7 @@ type CompareMetrics struct {
 	thresholdCriticalD float64
 }
 
-func (cm *CompareMetrics) percentage(debug bool) (string, int) {
+func (cm *CompareMetrics) percentageDiff(debug bool) (string, int) {
 	var difference float64
 	var message string
 
@@ -58,7 +58,7 @@ func (cm *CompareMetrics) percentage(debug bool) (string, int) {
 	return message, EXIT_CODE_OK
 }
 
-func (cm *CompareMetrics) absolute(debug bool) (string, int) {
+func (cm *CompareMetrics) absoluteDiff(debug bool) (string, int) {
 	var message string
 	firstMetricAVG := cm.graphiteClient.getValueOfMetric(cm.metric, cm.range1From, cm.range1Until, debug)
 	secondMetricAVG := cm.graphiteClient.getValueOfMetric(cm.metric, cm.range2From, cm.range2Until, debug)
@@ -90,7 +90,7 @@ func (cm *CompareMetrics) absolute(debug bool) (string, int) {
 	return message, EXIT_CODE_OK
 }
 
-func (cm *CompareMetrics) absoluteSingle(debug bool) (string, int) {
+func (cm *CompareMetrics) absoluteCmp(debug bool) (string, int) {
 	value := cm.graphiteClient.getValueOfMetric(cm.metric, cm.range1From, cm.range1Until, debug)
 
 	if value > cm.thresholdCriticalI && cm.thresholdCriticalI != MAGIC_DO_NOT_CARE_VALUE {
@@ -109,12 +109,12 @@ func (cm *CompareMetrics) absoluteSingle(debug bool) (string, int) {
 
 func (cm *CompareMetrics) analysisOfMetrics(debug bool) (string, int)  {
 	switch cm.mode {
-	case "percent":
-		return cm.percentage(debug)
-	case "absolute":
-		return cm.absolute(debug)
-	case "singleAbsolute":
-		return cm.absoluteSingle(debug)
+	case "percentageDiff":
+		return cm.percentageDiff(debug)
+	case "absoluteDiff":
+		return cm.absoluteDiff(debug)
+	case "absoluteCmp":
+		return cm.absoluteCmp(debug)
 	default:
 		return "Unsupported mode", EXIT_CODE_UNKNOWN
 	}
