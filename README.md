@@ -23,7 +23,7 @@ All of these methods print the result and give you exit code according nagios st
 - -a string
         AuthToken to access the graphite-API. For example 'qqq'
 - -mode string
-      	Mode of analysis of metrics. E.G. percent, absolute, singleAbsolute (default "percent")
+      	Mode of analysis of metrics. E.G. percentageDiff, absoluteDiff, absoluteCmp (default "percentageDiff")
 - -ci int
         Metrics above this threshold will be marked as critical (default 40)
 - -wi int
