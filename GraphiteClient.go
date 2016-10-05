@@ -16,11 +16,19 @@ type GraphiteClient struct {
 
 
 func (c GraphiteClient)getFindMetricBaseUrl() string {
-	return fmt.Sprint(c.graphiteBaseURL, "metrics/find?", getUrlAuthTokenParam(c), "&")
+	if c.authToken != "" {
+		return fmt.Sprint(c.graphiteBaseURL, "metrics/find?", getUrlAuthTokenParam(c), "&")
+	} else {
+		return fmt.Sprint(c.graphiteBaseURL, "metrics/find?")
+	}
 }
 
 func (c GraphiteClient)getRenderBaseUrl() string {
-	return fmt.Sprint(c.graphiteBaseURL, "render?", getUrlAuthTokenParam(c), "&")
+	if c.authToken != "" {
+		return fmt.Sprint(c.graphiteBaseURL, "render?", getUrlAuthTokenParam(c), "&")
+	} else {
+		return fmt.Sprint(c.graphiteBaseURL, "render?")
+	}
 }
 
 func getUrlAuthTokenParam(c GraphiteClient) string {

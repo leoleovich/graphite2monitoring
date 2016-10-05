@@ -18,10 +18,15 @@ const EXIT_CODE_UNKNOWN = 3;
 const MAGIC_DO_NOT_CARE_VALUE = -0.10101;
 
 func new_token(username string, timestamp int, secret string) string {
-	h := hmac.New(sha256.New, []byte(secret))
-	unauthed_token := fmt.Sprint(timestamp,":",username)
-	h.Write([]byte(unauthed_token))
-	return fmt.Sprint(hex.EncodeToString(h.Sum(nil)), ":", timestamp, ":", username)
+	if secret == "" {
+		return ""
+	} else {
+		h := hmac.New(sha256.New, []byte(secret))
+		unauthed_token := fmt.Sprint(timestamp,":",username)
+		h.Write([]byte(unauthed_token))
+		return fmt.Sprint(hex.EncodeToString(h.Sum(nil)), ":", timestamp, ":", username)
+	}
+
 }
 func converTime2GraphiteFormat(time2convert int) string {
 	return "-" + strconv.Itoa(time2convert) + "s" // -3600s
@@ -67,8 +72,8 @@ func main() {
 	flag.BoolVar(&debug, "d", false, "Debug mode will print a lot of additinal info")
 	flag.Parse()
 
-	if authToken == "" ||  metric == "" || url == "" {
-		fmt.Println("URL (-U), authToken (-a) and metric (-m) attributes are required")
+	if metric == "" || url == "" {
+		fmt.Println("URL (-U) and metric (-m) attributes are required")
 		flag.Usage()
 		os.Exit(EXIT_CODE_UNKNOWN)
 	}
