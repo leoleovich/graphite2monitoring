@@ -14,7 +14,9 @@ This service will analyze metrics from graphite in one of next modes:
 	simular to percent, but with absolute values (2nd-1st)
 - absoluteSingle:  
 	tales metric only within range1 (from-until)
-All of these methods print the result and give you exit code according nagios standards
+All of these methods print the result and give you exit code according nagios standards  
+  
+Warning limits include (intersect) threshold you specify (<= or >=) and criticals do not
 
 
 # Usage
@@ -24,14 +26,14 @@ All of these methods print the result and give you exit code according nagios st
         AuthToken to access the graphite-API. For example 'qqq'
 - -mode string
       	Mode of analysis of metrics. E.G. percentageDiff, absoluteDiff, absoluteCmp (default "percentageDiff")
-- -ci int
-        Metrics above this threshold will be marked as critical (default 40)
-- -wi int
-        Metrics above this threshold will be marked as warning (default 20)
-- -cd int
-        Metrics below this threshold will be marked as critical (default 40)
-- -wd int
-        Metrics below this threshold will be marked as warning (default 20)
+- -ci float
+      	Increasing. Metrics above this threshold will be marked as critical (default -0.10101)
+- -wi float
+      	Increasing. Metrics above this threshold will be marked as warning (default -0.10101)
+- -cd float
+    	Decreasing. Metrics below this threshold will be marked as critical (default -0.10101)
+- -wd float
+     	Decreasing. Metrics below this threshold will be marked as warning (default -0.10101)
 - -m string
         Name of metric or metric filter e.g. qqqq.test.leoleovich.currentProblems
 - -range1From int
@@ -47,23 +49,15 @@ All of these methods print the result and give you exit code according nagios st
 - -d	Debug mode will print a lot of additinal info
 
 # Examples
-- ```graphite2monitoring -U 'https://graphite.protury.info/' -a 'verySecretKey' -m 'all.about.money' -wd '0' -cd '0' -wi '5' -ci '10' -range1From '3600' -range1Until '3000' -range2From '600' -range2Until 0```  
-Decreasing of metric is: 78.7%  
+- ```graphite2monitoring -U 'https://graphite.protury.info/' -mode 'absoluteCmp' -m 'sumSeries(offset(scale(all.about.money*,0),1))' -wd '-0.10101' -cd '1' -wi '3' -ci '-0.10101' -range1From '1800' -range1Until '0' -range2From '1800' -range2Until 0```  
+Metric is ok (low limits (1.00 -0.10) < 2.00 < high limits (3.00 -0.10))  
 ```echo $?```  
 0
-- ```graphite2monitoring -U 'https://graphite.protury.info/' -a 'verySecretKey' -m 'all.about.money' -wd '70' -cd '80' -wi '5' -ci '10' -range1From '3600' -range1Until '3000' -range2From '600' -range2Until 0```  
-Decreasing of metric is: 78.7%  
+- ```graphite2monitoring -U 'https://graphite.protury.info/' -mode 'absoluteCmp' -m 'sumSeries(offset(scale(all.about.money*,0),1))' -wd '-0.10101' -cd '1' -wi '2' -ci '-0.10101' -range1From '1800' -range1Until '0' -range2From '1800' -range2Until 0```  
+Metric is above warning threshold (2.00 => 2.00)  
 ```echo $?```  
 1
-- ```graphite2monitoring -U 'https://graphite.protury.info/' -a 'verySecretKey' -m 'all.about.money' -wd '5' -cd '10'  
-Increasing of metric is: 78.9%  
+- ```graphite2monitoring -U 'https://graphite.protury.info/' -mode 'absoluteCmp' -m 'sumSeries(offset(scale(all.about.money*,0),1))' -wd '-0.10101' -cd '3' -wi '4' -ci '-0.10101' -range1From '1800' -range1Until '0' -range2From '1800' -range2Until 0```  
+Metric is below critical threshold (2.00 < 3.00)  
 ```echo $?```  
 2
-- ```graphite2monitoring  -U 'https://graphite.protury.info/' -a 'verySecretKey' -m 'all.about.money' -wd '2' -cd '1' -wi '5' -ci '10' -range1From '3600' -range1Until '3000' -range2From '600' -range2Until 0 -mode 'singleAbsolute'```  
-Metric is below critical threshold (0.000000 < 1.000000)  
-```echo $?```  
-2
-- ```graphite2monitoring  -U 'https://graphite.innogames.de/' -a 'wtL$cDaCB%PpqtofjPNj1Ux+' -m 'nagios.wallOfShame.oleg_obleukhov.currentProblems' -wd '0' -cd '-1' -wi '5' -ci '10' -range1From '3600' -range1Until '3000' -range2From '600' -range2Until 0 -mode 'singleAbsolute'```  
-Metric is ok (low limits (-1.000000 0.000000) < 0.000000 < high limits (5.000000 10.000000))  
-```echo $?```
-0
