@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"strconv"
+	"time"
 )
 
 
@@ -39,13 +40,15 @@ func download(url string, debug bool) []byte {
 	if debug {
 		fmt.Println("URL: " + url)
 	}
-	res, err  := http.Get(url)
+
+	client := http.Client{Timeout: time.Duration(5 * time.Second)}
+	res, err  := client.Get(url)
 	if err != nil {
-		panic(err)
+		os.Exit(3)
 	}
 	if res.StatusCode != 200 {
 		fmt.Println("Graphite returned " + strconv.Itoa(res.StatusCode))
-		os.Exit(10)
+		os.Exit(3)
 	}
 	content, err := ioutil.ReadAll(res.Body)
 	if err != nil {
@@ -67,14 +70,14 @@ func json2float (content []byte) float64 {
 	//fmt.Println(r[0].Datapoints[0][0])
 	if len(r) == 0 {
 		fmt.Println("Invalid data got from Graphite - Check, that your metric exist")
-		os.Exit(2)
+		os.Exit(3)
 	}
 
 	var sum float64
 	for _, value := range r {
 		if len(value.Datapoints) == 0 {
 			fmt.Println("Invalid data got from Graphite - Empty Datapoint set")
-			os.Exit(2)
+			os.Exit(3)
 		}
 		// Graphite may return null as a value (no data in fact, but you will have 0 in structure)
 		sum += value.Datapoints[0][0]
