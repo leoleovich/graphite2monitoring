@@ -1,67 +1,60 @@
 package main
+
 import (
-	"fmt"
-	"net/http"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
-	"strconv"
 	"time"
+	"crypto/tls"
 )
 
-
 type GraphiteClient struct {
-	authToken string
-	graphiteBaseURL string
+	Username string
+	Password string
+	URL      string
 }
 
-
-func (c GraphiteClient)getFindMetricBaseUrl() string {
-	if c.authToken != "" {
-		return fmt.Sprint(c.graphiteBaseURL, "metrics/find?", getUrlAuthTokenParam(c), "&")
-	} else {
-		return fmt.Sprint(c.graphiteBaseURL, "metrics/find?")
-	}
-}
-
-func (c GraphiteClient)getRenderBaseUrl() string {
-	if c.authToken != "" {
-		return fmt.Sprint(c.graphiteBaseURL, "render?", getUrlAuthTokenParam(c), "&")
-	} else {
-		return fmt.Sprint(c.graphiteBaseURL, "render?")
-	}
-}
-
-func getUrlAuthTokenParam(c GraphiteClient) string {
-	return fmt.Sprint("__auth_token=", c.authToken)
-}
-
-func download(url string, debug bool) []byte {
+func (c GraphiteClient) download(debug bool) []byte {
 	if debug {
-		fmt.Println("URL: " + url)
+		fmt.Println("URL: " + c.URL)
 	}
 
-	client := http.Client{Timeout: time.Duration(5 * time.Second)}
-	res, err  := client.Get(url)
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
+	client := http.Client{Timeout: time.Duration(5 * time.Second), Transport: tr}
+	req, err := http.NewRequest("POST", c.URL, nil)
 	if err != nil {
+		fmt.Println(err)
+		os.Exit(3)
+	}
+
+	req.SetBasicAuth(c.Username, c.Password)
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
 		os.Exit(3)
 	}
 	if res.StatusCode != 200 {
-		fmt.Println("Graphite returned " + strconv.Itoa(res.StatusCode))
+		fmt.Println("Graphite returned", res.StatusCode)
 		os.Exit(3)
 	}
+
 	content, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		panic(err)
-		fmt.Println(string(content))
+		fmt.Println(err)
+		os.Exit(3)
 	}
 	defer res.Body.Close()
 	return content
 }
 
-func json2float (content []byte) float64 {
+func json2float(content []byte) float64 {
 	type Result struct {
-		Target  string `json:"target"`
+		Target     string      `json:"target"`
 		Datapoints [][]float64 `json:"datapoints"`
 	}
 	var r []Result
@@ -82,12 +75,11 @@ func json2float (content []byte) float64 {
 		// Graphite may return null as a value (no data in fact, but you will have 0 in structure)
 		sum += value.Datapoints[0][0]
 	}
-	return sum/float64(len(r))
+	return sum / float64(len(r))
 }
-func (c GraphiteClient)getValueOfMetric(metricName string, from string, until string, debug bool) float64 {
+func (c GraphiteClient) getValueOfMetric(metricName string, from string, until string, debug bool) float64 {
 	//Big value, so that we get the avg over all data. Then we are sure that we get only one result.
 	intervalString := "99year"
-	url := fmt.Sprint(c.getRenderBaseUrl(), "target=summarize(", metricName,  ",\"",  intervalString,  "\",\"avg\")&from=", from, "&until=", until, "&format=json")
-
-	return json2float(download(url, debug))
+	c.URL = fmt.Sprint(c.URL, "target=summarize(", metricName, ",\"", intervalString, "\",\"avg\")&from=", from, "&until=", until, "&format=json")
+	return json2float(c.download(debug))
 }

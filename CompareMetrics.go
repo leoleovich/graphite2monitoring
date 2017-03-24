@@ -1,20 +1,20 @@
 package main
+
 import (
 	"fmt"
 )
 
-
 type CompareMetrics struct {
-	graphiteClient GraphiteClient
-	metric string
-	mode string
-	range1From string
-	range1Until string
-	range2From string
-	range2Until string
-	thresholdWarningI float64
+	graphiteClient     GraphiteClient
+	metric             string
+	mode               string
+	range1From         string
+	range1Until        string
+	range2From         string
+	range2Until        string
+	thresholdWarningI  float64
 	thresholdCriticalI float64
-	thresholdWarningD float64
+	thresholdWarningD  float64
 	thresholdCriticalD float64
 }
 
@@ -26,7 +26,7 @@ func (cm *CompareMetrics) percentageDiff(debug bool) (string, int) {
 	secondMetricAVG := cm.graphiteClient.getValueOfMetric(cm.metric, cm.range2From, cm.range2Until, debug)
 
 	// Percentage of the second metric from the first one
-	percentage := secondMetricAVG*100.0/firstMetricAVG
+	percentage := secondMetricAVG * 100.0 / firstMetricAVG
 
 	if debug {
 		fmt.Printf("firstMetricAVG: %.2f\n", firstMetricAVG)
@@ -103,11 +103,11 @@ func (cm *CompareMetrics) absoluteCmp(debug bool) (string, int) {
 		return fmt.Sprintf("Metric is below warning threshold (%.2f <= %.2f)", value, cm.thresholdWarningD), EXIT_CODE_WARNING
 	} else {
 		return fmt.Sprintf("Metric is ok (low limits (%.2f %.2f) < %.2f < high limits (%.2f %.2f))",
-			cm.thresholdCriticalD, cm.thresholdWarningD, value, cm.thresholdWarningI, cm.thresholdCriticalI ), EXIT_CODE_OK
+			cm.thresholdCriticalD, cm.thresholdWarningD, value, cm.thresholdWarningI, cm.thresholdCriticalI), EXIT_CODE_OK
 	}
 }
 
-func (cm *CompareMetrics) analysisOfMetrics(debug bool) (string, int)  {
+func (cm *CompareMetrics) analysisOfMetrics(debug bool) (string, int) {
 	switch cm.mode {
 	case "percentageDiff":
 		return cm.percentageDiff(debug)

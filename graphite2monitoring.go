@@ -1,57 +1,40 @@
 package main
 
 import (
-	"fmt"
-	"time"
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/hex"
 	"flag"
+	"fmt"
 	"os"
 	"strconv"
 )
 
-const EXIT_CODE_OK = 0;
-const EXIT_CODE_WARNING = 1;
-const EXIT_CODE_CRITICAL = 2;
-const EXIT_CODE_UNKNOWN = 3;
-const MAGIC_DO_NOT_CARE_VALUE = -0.10101;
+const EXIT_CODE_OK = 0
+const EXIT_CODE_WARNING = 1
+const EXIT_CODE_CRITICAL = 2
+const EXIT_CODE_UNKNOWN = 3
+const MAGIC_DO_NOT_CARE_VALUE = -0.10101
 
-func new_token(username string, timestamp int, secret string) string {
-	if secret == "" {
-		return ""
-	} else {
-		h := hmac.New(sha256.New, []byte(secret))
-		unauthed_token := fmt.Sprint(timestamp,":",username)
-		h.Write([]byte(unauthed_token))
-		return fmt.Sprint(hex.EncodeToString(h.Sum(nil)), ":", timestamp, ":", username)
-	}
-
-}
 func converTime2GraphiteFormat(time2convert int) string {
 	return "-" + strconv.Itoa(time2convert) + "s" // -3600s
 }
 
 func main() {
-	var username, authToken, metric, url, mode string
+	var username, password, metric, url, mode string
 	var thresholdWarningI, thresholdCriticalI, thresholdWarningD, thresholdCriticalD float64
 	var range1FromAgo, range1UntilAgo, range2FromAgo, range2UntilAgo int
 	var debug bool
 
-
 	message := "This service will analyze metrics from graphite in one of next modes:\n" +
-	"\t - percentageDiff (default):\n" +
-	"\t\t takes mertic within range1 (from-until) and range2 (from-until)\n" +
-	"\t\t and count as percent 2 metric from the 1st one (2nd*100/1st)\n" +
-	"\t - absoluteDiff:\n" +
-	"\t\t simular to percent, but with absolute values (2nd-1st)\n" +
-	"\t - absoluteCmp:\n" +
-	"\t\t tales metric only within range1 (from-until) and compares with absolute numbers (not diff)\n" +
-	"All of these methods print the result and give you exit code according nagios standards"
-
+		"\t - percentageDiff (default):\n" +
+		"\t\t takes mertic within range1 (from-until) and range2 (from-until)\n" +
+		"\t\t and count as percent 2 metric from the 1st one (2nd*100/1st)\n" +
+		"\t - absoluteDiff:\n" +
+		"\t\t simular to percent, but with absolute values (2nd-1st)\n" +
+		"\t - absoluteCmp:\n" +
+		"\t\t tales metric only within range1 (from-until) and compares with absolute numbers (not diff)\n" +
+		"All of these methods print the result and give you exit code according nagios standards"
 
 	flag.StringVar(&username, "u", "graphite", "User, which has rights to access Graphite")
-	flag.StringVar(&authToken, "a", "", "AuthToken to access the graphite-API. For example 'qqq'")
+	flag.StringVar(&password, "p", "", "Password to access the graphite-API. For example 'qqq'")
 	flag.StringVar(&metric, "m", "", "Name of metric or metric filter e.g. qqqq.test.leoleovich.currentProblems")
 	flag.StringVar(&url, "U", "", "Base address of your graphite server e.g. https://graphite.protury.info/")
 
@@ -66,8 +49,6 @@ func main() {
 	flag.Float64Var(&thresholdCriticalI, "ci", MAGIC_DO_NOT_CARE_VALUE, "Increasing. Metrics above this threshold will be marked as critical")
 	flag.Float64Var(&thresholdWarningD, "wd", MAGIC_DO_NOT_CARE_VALUE, "Decreasing. Metrics below this threshold will be marked as warning")
 	flag.Float64Var(&thresholdCriticalD, "cd", MAGIC_DO_NOT_CARE_VALUE, "Decreasing. Metrics below this threshold will be marked as critical")
-
-
 
 	flag.BoolVar(&debug, "d", false, "Debug mode will print a lot of additinal info")
 	flag.Parse()
@@ -94,13 +75,12 @@ func main() {
 	range2UntilS := converTime2GraphiteFormat(range2UntilAgo)
 
 	if debug {
-		fmt.Println("Token: " + authToken)
 		fmt.Println("Range1: " + range1FromS + " - " + range1UntilS)
 		fmt.Println("Range2: " + range2FromS + " - " + range2UntilS)
 	}
 
 	cm := CompareMetrics{
-		GraphiteClient{new_token(username, int(time.Now().Unix()), authToken), url},
+		GraphiteClient{username, password, url + "/render?"},
 		metric,
 		mode,
 		range1FromS,
