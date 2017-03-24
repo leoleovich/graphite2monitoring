@@ -22,8 +22,10 @@ Warning limits include (intersect) threshold you specify (<= or >=) and critical
 # Usage
 - -U string
         Base address of your graphite server e.g. https://graphite.protury.info/
-- -a string
-        AuthToken to access the graphite-API. For example 'qqq'
+- -u string
+        User, which has rights to access Graphite
+- -p string
+        Password to access the graphite-API. For example 'qqq'
 - -mode string
       	Mode of analysis of metrics. E.G. percentageDiff, absoluteDiff, absoluteCmp (default "percentageDiff")
 - -ci float
@@ -44,8 +46,6 @@ Warning limits include (intersect) threshold you specify (<= or >=) and critical
     	Amount of seconds ago for the 2st range (from) (default 3600) = 1 hour
 - -range2Until int
     	Amount of seconds ago for the 2st range (until) (default 0) = current time
-- -u string
-    	User, which has rights to access Graphite (default "graphite")
 - -d	Debug mode will print a lot of additinal info
 
 # Examples
